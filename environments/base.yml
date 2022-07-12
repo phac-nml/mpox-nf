@@ -1,0 +1,12 @@
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - bwa
+  - csvtk
+  - fastqc
+  - ivar
+  - nextclade
+  - samtools
+  - seqtk
