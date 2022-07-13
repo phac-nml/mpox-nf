@@ -144,7 +144,7 @@ nextflow run NML/monkeypox-nf --help
         - `,` separators inside the cells were changed to `;`
 
     | sample | num_reads_mapped | avg_read_depth | total_n_count | proportion_basecalled | nc_clade | ... |
-    |-|-|-|-|-|-|-|-|
+    |-|-|-|-|-|-|-|
     | Sample1 | 7606 | 4.47005 | 194674 | 0.0128544 | hMPXV-1 | ... |
     | Sample2 | 320700 | 213.525 | 423 | 0.997855 | hMPXV-1 | ... |
 
