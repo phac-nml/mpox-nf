@@ -62,7 +62,7 @@ All instructions are for a POSIX compatible system and has only been tested on U
 4. Run the pipeline using the conda profile which will install the other pipeline dependencies
     ```bash
     conda activate nextflow
-    nextflow run nml/monkeypox-nf -profile conda --cache [Path/to/EnvironmentCacheDir]
+    nextflow run phac-nml/monkeypox-nf -profile conda --cache [Path/to/EnvironmentCacheDir]
     ```
 
 #### Manual Installation if not using conda:
@@ -104,12 +104,12 @@ Quick command that will run input data from start to finish with no additional o
 
 #### General:
 ```bash
-nextflow run NML/monkeypox-nf --directory [/Path/to/PAIRED_FASTQ_DIR] --human_ref [/Path/to/HUMAN_REF_FASTA_File] 
+nextflow run phac-nml/monkeypox-nf --directory [/Path/to/PAIRED_FASTQ_DIR] --human_ref [/Path/to/HUMAN_REF_FASTA_File] 
 ```
 
 #### Help Command and Exit:
 ```bash
-nextflow run NML/monkeypox-nf --help 
+nextflow run phac-nml/monkeypox-nf --help 
 ```
 
 ### Inputs
