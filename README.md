@@ -2,11 +2,11 @@
 
 A monkeypox virus (MPXV) assembly pipeline using Nextflow for host-removal, reference-based assembly, and generation of sequence quality metrics for Illumina paired-end data using a shotgun metagenomic sequencing approach.
 
-Briefly, paired-end reads are mapped to a composite reference sequence composed of the Human hg38 and MPXV reference genome with BWA-MEM, assembled with iVar consensus. The sequence quality metrics are generated with samtools and Nextclade v2.
+Briefly, paired-end reads are mapped to a composite reference sequence composed of the Human hg38 and MPXV reference genome with BWA-MEM and assembled with the iVar consensus tool. The sequence quality metrics are generated with samtools and Nextclade v2.
 
 A composite reference mapping approach was chosen as we aim to capture as many MPXV reads as possible to generate a consensus sequence while excluding ALL true human reads from the final de-hosted read dataset and consensus sequence. In this approach, human reads that weakly map to the MPXV reference or to the human reference genome are removed from the read dataset. This pipeline ensures that data can be shared and published with no risk to individual privacy.
 
-**Note:** Resource allocation is currently not optimized and we will be working to address that as soon as possible.
+**Note:** Resource allocation is currently not optimized. We will be working to address that as soon as possible.
 
 ----------
 
