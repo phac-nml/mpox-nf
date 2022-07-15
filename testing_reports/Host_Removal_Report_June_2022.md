@@ -133,7 +133,7 @@ As manual review could only be done for a small subsection of the reads, the rem
 
 **Table 1.** Most frequent subject common names identified in Kraken2 human-identified fastq reads.
 
-| Subject Identified Common Name | Read Count |
+| Subject Identified Common Name | Blast Counts |
 |---|---|
 | Monkeypox virus | 60964 |
 | Ralstonia solanacearum | 514 |
