@@ -4,7 +4,6 @@ include {
     generateCompositeReference;
     generateCompositeIndex;
     grabCompositeIndex;
-    runFastQC;
     compositeMapping;
     filterBam as filterBam0;
     filterBam as filterBam30;
@@ -12,6 +11,7 @@ include {
     } from '../modules/main_modules.nf'
 
 // Workflows to Include
+include { initial_analysis } from 'workflow_initial_analysis.nf'
 include { host_removal }   from './workflow_removal.nf'
 include { assess_quality } from './workflow_quality.nf'
 
@@ -45,7 +45,8 @@ workflow mpx_main {
             .map{ row -> tuple(row.sample, file(row.read1), file(row.read2), row.gzipped) }
             .set { ch_paired_fastqs }
 
-        runFastQC( ch_paired_fastqs )
+        // Run initial analysis workflow on fastq files
+        initial_analysis( ch_paired_fastqs )
 
         // Mapping and Filtering based on wanted ID
         compositeMapping(
