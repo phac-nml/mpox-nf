@@ -1,7 +1,7 @@
 // Modules to include
 include {
     runFastQC;
-} from '../modules/pre-analysis_modules.nf'
+} from '../modules/initial_analysis_modules.nf'
 
 // Workflow for quality metrics and other checks
 workflow initial_analysis {
