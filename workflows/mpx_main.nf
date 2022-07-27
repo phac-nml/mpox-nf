@@ -11,7 +11,7 @@ include {
     } from '../modules/main_modules.nf'
 
 // Workflows to Include
-include { initial_analysis } from 'workflow_initial_analysis.nf'
+include { initial_analysis } from './workflow_initial_analysis.nf'
 include { host_removal }   from './workflow_removal.nf'
 include { assess_quality } from './workflow_quality.nf'
 
