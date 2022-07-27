@@ -143,7 +143,7 @@ nextflow run phac-nml/monkeypox-nf --help
         - Column headers were renamed such that `.` were turned into `_` and all are prefixed with `nc_`
         - `,` separators inside the cells were changed to `;`
 
-    | sample | num_reads_mapped | avg_read_depth | total_n_count | proportion_basecalled | nc_clade | ... |
+    | sample | num_reads_mapped | mean_sequencing_depth | num_consensus_n | genome_completeness | nc_clade | ... |
     |-|-|-|-|-|-|-|
     | Sample1 | 7606 | 4.47005 | 194674 | 0.0128544 | hMPXV-1 | ... |
     | Sample2 | 320700 | 213.525 | 423 | 0.997855 | hMPXV-1 | ... |
@@ -152,9 +152,9 @@ nextflow run phac-nml/monkeypox-nf --help
     ```
     sample                - Name of the sample
     num_reads_mapped      - Int number of reads mapped, pulled from BAM file using samtools flagstats. Remember reads are paired
-    avg_read_depth        - Float average genomic read depth, pulled from BAM file using samtools depth and awk
-    total_n_count         - Int number of positions that were not basecalled in the genome, from seqtk comp
-    proportion_basecalled - Float proportion of the genome called a base (genome completeness), from seqtk comp and awk
+    mean_sequencing_depth - Float average genomic read depth, pulled from BAM file using samtools depth and awk
+    num_consensus_n       - Int number of positions that were not basecalled in the genome, from seqtk comp
+    genome_completeness   - Float proportion of the genome called a base (genome completeness), from seqtk comp and awk
     ```
 
 3. all_consensus directory

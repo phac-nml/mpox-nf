@@ -11,7 +11,7 @@ process assessSimpleQuality {
     script:
     """
     # Header
-    printf "sample,num_reads_mapped,avg_read_depth,total_n_count,proportion_basecalled\n" > ${sample}_quality.csv
+    printf "sample,num_reads_mapped,mean_sequencing_depth,num_consensus_n,genome_completeness\n" > ${sample}_quality.csv
 
     # Stats we want
     NUM_READS=`samtools view -F 0x04 -c $filteredbam`
