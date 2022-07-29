@@ -7,7 +7,7 @@ include {
 workflow initial_analysis {
     take:
         ch_paired_fastqs
-    
+
     main:
         // Add any other pre-analysis checks here
         runFastQC( ch_paired_fastqs )

@@ -16,6 +16,7 @@ A composite reference mapping approach was chosen as we aim to capture as many M
     - [Quick Start](#quick-start)
     - [Inputs](#inputs)
     - [Outputs](#outputs)
+    - [Resources Needed](#resources-needed)
 - [Full Pipeline Process Details](#full-pipeline-process-details)
     1. [Generate and Index Composite Reference](#1-generate-and-index-composite-reference)
     2. [Initial Fastq Quality Metrics](#2-initial-fastq-quality-metrics)
@@ -198,6 +199,45 @@ results
     ├── Sample2_R1_fastqc.html
     └── Sample2_R2_fastqc.html
 ```
+
+### Resources Needed
+
+Resource usage and settings are important to run efficiently without wasting time. The below sections will give the minimal and default resources utilized along with an explanation on how to set custom resources.
+
+The slowest step will almost always be the indexing of the composite genome which will take 1-2 hours. If running with minimal resources or extremely large input files, then the composite mapping step could take longer.
+
+#### Minimum (but Not Recommended):
+
+This pipeline can be run on the following minimum specs:
+- 1 core
+- 8GB memory
+
+Note: Running minimal specs with paired fastq file sizes (R1+R2) greater than 5GB (about 5 million paired reads) will take a fairly long time.
+- Example 1: 24GB paired fastq files took 5.5 hours
+- Example 2: 138GB input paired files (one sample) took 2 days and 9 hours to map with bwa-mem
+
+See how to setup a resource config below.
+
+#### Recommended/Provided Resource Config:
+
+The default setting for the pipeline require:
+- 3 cores (4 if wanting to run Kraken2)
+- 12GB memory (16 if wanting to run Kraken2)
+
+Note: With these specs, you should be able to map a sample with a combined paired file size of 24GB (about 36 million paired reads) in about 3 hours
+
+#### Setting Resource Config:
+
+To create a custom resource file and utilize it in this pipeline, you can copy the `resources.config` file and modify the CPU and memory needs for default processes, medium processes (bwa-mem at the moment), and large processes (kraken2 at the moment) to whatever you wish along with potentially changing the executor to something else.
+
+To utilize a custom config file, you can add `-c /path/to/config` to your `nextflow run phac-nml/monkeypox-nf` command.
+
+For resources:
+- BWA-MEM should be given 4GB/core
+- Kraken2 should be given 4GB/core (2GB/core should work if memory is a constraint)
+
+The number of cores significantly speeds up analysis on larger files.
+- Example: 138GB input paired files (one sample) took 1.66 hours using 24 cores and 96GB memory. 
 
 ----------
 
