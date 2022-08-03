@@ -151,11 +151,17 @@ nextflow run phac-nml/monkeypox-nf --help
 
     - Non-nextclade columns are as follows:
     ```
-    sample                - Name of the sample
-    num_reads_mapped      - Int number of reads mapped, pulled from BAM file using samtools flagstats. Remember reads are paired
-    mean_sequencing_depth - Float average genomic read depth, pulled from BAM file using samtools depth and awk
-    num_consensus_n       - Int number of positions that were not basecalled in the genome, from seqtk comp
-    genome_completeness   - Float proportion of the genome called a base (genome completeness), from seqtk comp and awk
+    sample                  - [String] Name of the sample
+    num_reads_mapped        - [Int] number of total reads mapped, pulled from BAM file using samtools flagstats.
+                                Reads are paired so to the number of total sequence fragments can be obtained by dividing this value by 2
+    mean_sequencing_depth   - [Float] average genomic read depth, pulled from BAM file using samtools depth and awk
+    median_sequencing_depth - [Int] median genomic read depth, pulled from BAM file using samtools depth and awk
+    num_consensus_n         - [Int] number of positions that were not basecalled in the genome, from seqtk comp
+    genome_completeness     - [Float] proportion of the genome where a base was called. Generated from seqtk comp and awk
+    percent_viral_reads     - [Float] percentage of input reads that were identified as viral after host removal
+                                kraken2_viral_reads * 2
+                               ------------------------- * 100
+                                   total sample reads
     ```
 
 3. all_consensus directory
@@ -220,11 +226,12 @@ See how to setup a resource config below.
 
 #### Recommended/Provided Resource Config:
 
-The default setting for the pipeline require:
+The default setting for the pipeline requires:
 - 3 cores (4 if wanting to run Kraken2)
 - 12GB memory (16 if wanting to run Kraken2)
 
-Note: With these specs, you should be able to map a sample with a combined paired file size of 24GB (about 36 million paired reads) in about 3 hours
+To get an idea on how long different sized input files should take to run the slowest step (bwa mem composite mapping) consult the following chart:
+![approx_time_for_filesize](./testing_reports/pictures/time_filesize.png)
 
 #### Setting Resource Config:
 
