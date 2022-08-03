@@ -237,7 +237,7 @@ For resources:
 - Kraken2 should be given 4GB/core (2GB/core should work if memory is a constraint)
 
 The number of cores significantly speeds up analysis on larger files.
-- Example: 138GB input paired files (one sample) took 1.66 hours using 24 cores and 96GB memory. 
+- Example: For a 138GB input paired files (one sample) mapping took 1.66 hours using 24 cores and 96GB memory. 
 
 ----------
 
