@@ -124,7 +124,8 @@ nextflow run phac-nml/monkeypox-nf --help
 | pcr_csv | Path to CSV file containing qPCR diagnostic primers for nextclade input (must follow nextclade's format) | 'data/nml_primers.csv' | Yes |
 | cache | Path to cache directory to store/reuse conda environments | None | Yes |
 | composite_bwa_index_dir | Path to directory containing BWA indexed composite genome to skip indexing step | None | Yes |
-| kraken_db | Path to directory containing Kraken2 database | None | Yes |
+| kraken_db | Path to directory containing Kraken2 database - Runs Kraken2 on the generated dehosted fastq files | None | Yes |
+| kraken_viral_id | String Kraken2 taxonomic identifier to use for the percent viral reads calculation. Default is the Integer ID for the Viruses domain | 10239 | Yes |
 
 ### Outputs
 
@@ -153,7 +154,7 @@ nextflow run phac-nml/monkeypox-nf --help
     ```
     sample                  - [String] Name of the sample
     num_reads_mapped        - [Int] number of total reads mapped, pulled from BAM file using samtools flagstats.
-                                Reads are paired so to the number of total sequence fragments can be obtained by dividing this value by 2
+                                Reads are paired so the number of total sequence fragments can be obtained by dividing this value by 2
     mean_sequencing_depth   - [Float] average genomic read depth, pulled from BAM file using samtools depth and awk
     median_sequencing_depth - [Int] median genomic read depth, pulled from BAM file using samtools depth and awk
     num_consensus_n         - [Int] number of positions that were not basecalled in the genome, from seqtk comp
@@ -230,14 +231,17 @@ The default setting for the pipeline requires:
 - 3 cores (4 if wanting to run Kraken2)
 - 12GB memory (16 if wanting to run Kraken2)
 
-To get an idea on how long different sized input files should take to run the slowest step (bwa mem composite mapping) consult the following chart:
+To get an approximate idea on how long different sized input files (file size is R1+R2)should take to run the slowest step, bwa mem composite mapping, consult the following chart:
 ![approx_time_for_filesize](./testing_reports/pictures/time_filesize.png)
 
 #### Setting Resource Config:
 
 To create a custom resource file and utilize it in this pipeline, you can copy the `resources.config` file and modify the CPU and memory needs for default processes, medium processes (bwa-mem at the moment), and large processes (kraken2 at the moment) to whatever you wish along with potentially changing the executor to something else.
 
+Tags available are: `mediumProcess`, and `largeProcess`
+
 To utilize a custom config file, you can add `-c /path/to/config` to your `nextflow run phac-nml/monkeypox-nf` command.
+- Look at the [default resources config](./conf/resources.config) as an example
 
 For resources:
 - BWA-MEM should be given 4GB/core
@@ -304,8 +308,10 @@ Sequence quality metrics are generated from the filtered MQ0 BAM file and the co
 Currently three profiles available:
 - standard
     - Sets executor to local
+    - Uses default resources
 - conda
     - Utilize conda to manage tool dependency and installations
+    - Uses default resources
 - nml
     - Utilize the NML cluster to speed up analysis
 
