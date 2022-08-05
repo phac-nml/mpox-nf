@@ -8,10 +8,10 @@ include {
 // Workflow for quality metrics and other checks
 workflow assess_quality {
     take:
-        ch_consensus_fasta
-        ch_filtered_bam
-        ch_composite_bam
-        ch_kraken_results
+        ch_consensus_fasta          // channel: [ val(sampleID), path(fasta) ]
+        ch_filtered_bam             // channel: [ val(sampleID), path(filteredBam) ]
+        ch_composite_bam            // channel: [ val(sampleID), path(compositeBam), path(compositeBamBai) ]
+        ch_kraken_results           // channel: [ val(sampleID), path(krakenReport) ]
 
     main:
         // Join fasta with bam and get some info

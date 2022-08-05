@@ -8,7 +8,7 @@ include {
 workflow host_removal {
     // Taking in the sample, filtered bam
     take:
-        ch_filtered_bam
+        ch_filtered_bam                     // channel: [ val(sampleID), path(filteredBam) ]
 
     main:
         generateHostRemovedFastq( ch_filtered_bam )
@@ -21,5 +21,5 @@ workflow host_removal {
             ch_kraken_results = ch_filtered_bam.map { it -> [ it[0], [] ] }
         }
     emit:
-    kraken_results = ch_kraken_results
+    kraken_results = ch_kraken_results      // channel: [ val(sampleID), path(krakenReport) ]
 }

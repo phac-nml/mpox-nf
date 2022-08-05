@@ -39,7 +39,7 @@ workflow mpx_main {
             ch_comp_idx = generateCompositeIndex.out.collect()
         }
 
-        // Setup Fastq files
+        // Setup fastq files in channel: [ val(sampleID), path(Read1), path(Read2), val(bool) ]
         generateSamplesheet( Channel.fromPath( params.directory, checkIfExists: true) )
             .splitCsv(header: true)
             .map { row -> tuple(row.sample, file(row.read1), file(row.read2), row.gzipped) }
