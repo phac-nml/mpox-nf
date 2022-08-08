@@ -13,9 +13,9 @@ class NextflowInitialize {
                 nextflow run ${workflow.manifest.name} --help
 
             Profiles:
-                -profile [conda,nml]            Configuration profile to use. Can use both if separated by a comma
+                -profile [standard,conda,nml]   Configuration profile to use. Can use both if separated by a comma
                     standard                      Standard profile, needs all tool dependencies installed on PATH and runs locally
-                    conda                         Utilize conda to control tool and dependency installation (uses mamba for environment install)
+                    conda                         Utilize conda to control tool and dependency installation (mamba for environment install)
                     nml                           NML specific profile to take advantage of NML cluster resources
 
             Mandatory Arguments:
