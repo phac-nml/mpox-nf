@@ -94,7 +94,9 @@ All instructions are for a POSIX compatible system and has only been tested on U
 ### Optional Data
 - Kraken2 Database
     - If provided as a command line (CL) input, it will run Kraken2 on dehosted reads to generate a Kraken2 report
-    - https://benlangmead.github.io/aws-indexes/k2 for different databases
+    - https://benlangmead.github.io/aws-indexes/k2 has different databases available to download.
+        - Strongly recommend the use of the `Standard` database to get a full report of what is remaining in your sample
+        - The `Virus` database should also work but will not give any further insight into the other reads in your sample
 
 ----------
 
@@ -155,7 +157,7 @@ nextflow run phac-nml/monkeypox-nf --help
     sample                  - [String] name of the sample
     num_reads_mapped        - [Int] number of total reads mapped, pulled from BAM file using samtools flagstats.
                                 Reads are paired so the number of total sequence fragments can be obtained by dividing this value by 2
-    mean_sequencing_depth   - [Float] average genomic read depth, pulled from BAM file using samtools depth and awk
+    mean_sequencing_depth   - [Float] mean genomic read depth, pulled from BAM file using samtools depth and awk
     median_sequencing_depth - [Int] median genomic read depth, pulled from BAM file using samtools depth and awk
     num_consensus_n         - [Int] number of positions that were not basecalled in the genome, from seqtk comp
     genome_completeness     - [Float] proportion of the genome where a base was called. Generated from seqtk comp and awk
