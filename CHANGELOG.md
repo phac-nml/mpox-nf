@@ -19,7 +19,7 @@
     - Initial analysis workflow added (for fastqc)
     - Host removal workflow emits kraken2 results if run
     - Added channel info to workflows
-- Setup proper resource usage and more info on that
+- Setup proper resource usage and more info on how a user can set their resources
 - Added license
 - Readme and help command updated
 

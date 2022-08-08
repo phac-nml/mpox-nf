@@ -145,14 +145,14 @@ nextflow run phac-nml/monkeypox-nf --help
         - Column headers were renamed such that `.` were turned into `_` and all are prefixed with `nc_`
         - `,` separators inside the cells were changed to `;`
 
-    | sample | num_reads_mapped | mean_sequencing_depth | num_consensus_n | genome_completeness | nc_clade | ... |
+    | sample | num_reads_mapped | mean_sequencing_depth | median_sequencing_depth | num_consensus_n | genome_completeness | nc_clade | ... |
     |-|-|-|-|-|-|-|
-    | Sample1 | 7606 | 4.47005 | 194674 | 0.0128544 | hMPXV-1 | ... |
-    | Sample2 | 320700 | 213.525 | 423 | 0.997855 | hMPXV-1 | ... |
+    | Sample1 | 7606 | 4.47005 | 6 | 194674 | 0.0128544 | hMPXV-1 | ... |
+    | Sample2 | 320700 | 213.525 | 192 | 423 | 0.997855 | hMPXV-1 | ... |
 
     - Non-nextclade columns are as follows:
     ```
-    sample                  - [String] Name of the sample
+    sample                  - [String] name of the sample
     num_reads_mapped        - [Int] number of total reads mapped, pulled from BAM file using samtools flagstats.
                                 Reads are paired so the number of total sequence fragments can be obtained by dividing this value by 2
     mean_sequencing_depth   - [Float] average genomic read depth, pulled from BAM file using samtools depth and awk
@@ -160,7 +160,7 @@ nextflow run phac-nml/monkeypox-nf --help
     num_consensus_n         - [Int] number of positions that were not basecalled in the genome, from seqtk comp
     genome_completeness     - [Float] proportion of the genome where a base was called. Generated from seqtk comp and awk
     percent_viral_reads     - [Float] percentage of input reads that were identified as viral after host removal
-                                kraken2_viral_reads * 2
+                                kraken2 viral reads * 2
                                ------------------------- * 100
                                    total sample reads
     ```
@@ -211,7 +211,9 @@ results
 
 Resource usage and settings are important to run efficiently without wasting time. The below sections will give the minimal and default resources utilized along with an explanation on how to set custom resources.
 
-The slowest step will almost always be the indexing of the composite genome which will take 1-2 hours. If running with minimal resources or extremely large input files, then the composite mapping step could take longer.
+The slowest step will almost always be the indexing of the composite genome which will take 1-2 hours and as it can be reused, there is an input, `composite_bwa_index_dir`, that can be given to skip this step once it has been done the first time.
+
+If running with minimal resources or large input files, then the composite mapping step could/will take longer and should be the process to focus on giving proper resources to.
 
 #### Minimum (but Not Recommended):
 
@@ -220,12 +222,12 @@ This pipeline can be run on the following minimum specs:
 - 8GB memory
 
 Note: Running minimal specs with paired fastq file sizes (R1+R2) greater than 5GB (about 5 million paired reads) will take a fairly long time.
-- Example 1: 24GB paired fastq files took 5.5 hours
-- Example 2: 138GB input paired files (one sample) took 2 days and 9 hours to map with bwa-mem
+- Example 1: 24GB paired fastq files took ~5.5 hours to complete
+- Example 2: 138GB input paired files took ~2 days and 9 hours to complete
 
-See how to setup a resource config below.
+See how to setup a resource config for this pipeline including the different labels that can be set below.
 
-#### Recommended/Provided Resource Config:
+#### Minimum Recommended/Provided Resource Config:
 
 The default setting for the pipeline requires:
 - 3 cores (4 if wanting to run Kraken2)
@@ -236,19 +238,19 @@ To get an approximate idea on how long different sized input files (file size is
 
 #### Setting Resource Config:
 
-To create a custom resource file and utilize it in this pipeline, you can copy the `resources.config` file and modify the CPU and memory needs for default processes, medium processes (bwa-mem at the moment), and large processes (kraken2 at the moment) to whatever you wish along with potentially changing the executor to something else.
+To create a custom resource file and utilize it in this pipeline, you can copy the `resources.config` file and modify the CPU and memory needs for default processes, medium processes (bwa-mem at the moment), and large processes (kraken2 at the moment) to whatever you wish along with potentially changing the executor or other values .
 
-Tags available are: `mediumProcess`, and `largeProcess`
+The labels available are: `mediumProcess`, and `largeProcess`
 
 To utilize a custom config file, you can add `-c /path/to/config` to your `nextflow run phac-nml/monkeypox-nf` command.
 - Look at the [default resources config](./conf/resources.config) as an example
 
 For resources:
 - BWA-MEM should be given 4GB/core
-- Kraken2 should be given 4GB/core (2GB/core should work if memory is a constraint)
+- Kraken2 should be given 4GB/core (2GB/core will work if memory is a constraint)
 
 The number of cores significantly speeds up analysis on larger files.
-- Example: For a 138GB input paired files (one sample) mapping took 1.66 hours using 24 cores and 96GB memory. 
+- Example: For a 138GB input paired files (running one sample) mapping took 1.66 hours using 24 cores with 96GB memory in comparison to 14 hours using 3 cores with 12GB memory. 
 
 ----------
 
@@ -300,7 +302,7 @@ samtools mpileup -Q 20 -a FILTER_BAM | ivar consensus -q 20 -t 0.7 -m 10 -p SAMP
 ```
 
 ### 7. Generate Sequence Quality Metrics
-Sequence quality metrics are generated from the filtered MQ0 BAM file and the consensus fasta using seqtk and samtools. Additional metrics are added from NextClade analysis of the consensus sequences using the Human Monkeypox (hMPXV) dataset. All metrics are joined by sample name to generate the final CSV output.
+Sequence quality metrics are generated using the composite mapping file, filtered MQ0 BAM file and the consensus fasta with seqtk, samtools, and awk. Additional metrics are added from NextClade analysis of the consensus sequences using the Human Monkeypox (hMPXV) dataset. All metrics are joined by the sample name to generate the final CSV output.
 
 ----------
 
