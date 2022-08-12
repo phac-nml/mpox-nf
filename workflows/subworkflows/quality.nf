@@ -29,7 +29,8 @@ workflow assess_quality {
         runNextclade( ch_fasta_only.files.collect() )
 
         // Singular CSV output
-        concatQuality( assessSimpleQuality.out.collect(), runNextclade.out )
+        if ( params.metadata_csv ) { ch_metadata = file( params.metadata_csv ) } else { ch_metadata = [] }
+        concatQuality( assessSimpleQuality.out.collect(), runNextclade.out, ch_metadata )
 
     emit:
     sequence_metrics = concatQuality.out        // channel: path(overall_sample_quality.csv)
