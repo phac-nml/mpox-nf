@@ -11,9 +11,10 @@ include {
     } from '../modules/main_modules.nf'
 
 // Workflows to Include
-include { initial_analysis } from './workflow_initial_analysis.nf'
-include { host_removal }   from './workflow_removal.nf'
-include { assess_quality } from './workflow_quality.nf'
+include { initial_analysis }    from './subworkflows/initial_analysis.nf'
+include { host_removal }        from './subworkflows/host_removal.nf'
+include { assess_quality }      from './subworkflows/quality.nf'
+include { upload }              from './subworkflows/upload.nf'
 
 workflow mpx_main {
     main:
@@ -67,5 +68,19 @@ workflow mpx_main {
         ivarConsensus( filterBam0.out.filteredbam )
 
         // Quality Workflow //
-        assess_quality( ivarConsensus.out, filterBam0.out.filteredbam, compositeMapping.out.sortedbam, host_removal.out.kraken_results )
+        assess_quality( 
+            ivarConsensus.out,
+            filterBam0.out.filteredbam,
+            compositeMapping.out.sortedbam,
+            host_removal.out.kraken_results
+        )
+
+        // Upload Workflow //
+        if ( params.upload_config ) {
+            upload(
+                ivarConsensus.out
+                host_removal.out.dehosted_fastq
+                assess_quality.out.sequence_metrics
+            )
+        }
 }

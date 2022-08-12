@@ -3,7 +3,7 @@ include {
     assessSimpleQuality;
     runNextclade;
     concatQuality
-} from '../modules/quality_modules.nf'
+} from '../../modules/quality_modules.nf'
 
 // Workflow for quality metrics and other checks
 workflow assess_quality {
@@ -31,5 +31,6 @@ workflow assess_quality {
         // Singular CSV output
         concatQuality( assessSimpleQuality.out.collect(), runNextclade.out )
 
-    //emit:
+    emit:
+    sequence_metrics = concatQuality.out        // channel: path(overall_sample_quality.csv)
 }
