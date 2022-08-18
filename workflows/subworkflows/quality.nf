@@ -12,6 +12,7 @@ workflow assess_quality {
         ch_filtered_bam             // channel: [ val(sampleID), path(filteredBam) ]
         ch_composite_bam            // channel: [ val(sampleID), path(compositeBam), path(compositeBamBai) ]
         ch_kraken_results           // channel: [ val(sampleID), path(krakenReport) ]
+        ch_metadata                 // channel: path(metadata_csv) or [] if none
 
     main:
         // Join fasta with bam and get some info
@@ -29,8 +30,11 @@ workflow assess_quality {
         runNextclade( ch_fasta_only.files.collect() )
 
         // Singular CSV output
-        if ( params.metadata_csv ) { ch_metadata = file( params.metadata_csv ) } else { ch_metadata = [] }
-        concatQuality( assessSimpleQuality.out.collect(), runNextclade.out, ch_metadata )
+        concatQuality(
+            assessSimpleQuality.out.collect(),
+            runNextclade.out,
+            ch_metadata
+        )
 
     emit:
     sequence_metrics = concatQuality.out        // channel: path(overall_sample_quality.csv)

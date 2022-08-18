@@ -51,8 +51,7 @@ workflow mpx_main {
 
         // Mapping and Filtering based on wanted ID
         compositeMapping(
-            ch_paired_fastqs
-                .combine( ch_comp_ref ),
+            ch_paired_fastqs.combine( ch_comp_ref ),
             ch_comp_idx
         )
 
@@ -68,19 +67,23 @@ workflow mpx_main {
         ivarConsensus( filterBam0.out.filteredbam )
 
         // Quality Workflow //
+        if ( params.metadata_csv ) { ch_metadata = file( params.metadata_csv ) } else { ch_metadata = [] }
+
         assess_quality( 
             ivarConsensus.out,
             filterBam0.out.filteredbam,
             compositeMapping.out.sortedbam,
-            host_removal.out.kraken_results
+            host_removal.out.kraken_results,
+            ch_metadata
         )
 
         // Upload Workflow //
         if ( params.upload_config ) {
             upload(
-                ivarConsensus.out
-                host_removal.out.dehosted_fastq
-                assess_quality.out.sequence_metrics
+                ivarConsensus.out,
+                host_removal.out.dehosted_fastq,
+                assess_quality.out.sequence_metrics,
+                ch_metadata
             )
         }
 }
