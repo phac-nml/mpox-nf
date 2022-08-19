@@ -8,7 +8,7 @@ nextflow run ./main.nf \
     -profile conda,test \
     --cache ./conda_cache_dir \
     --directory $PWD/.github/ci-data/ \
-    --human_ref $PWD/.github/ci-data/partial_hg38_ref.fa
+    --human_ref $PWD/.github/ci-data/partial_hg38_ref.fa \
     --metadata_csv $PWD/.github/ci-data/test_metadata.csv
 
 # Check that the output is as expected
