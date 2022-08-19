@@ -13,18 +13,24 @@ nextflow run ./main.nf \
 
 # Check that the output is as expected
 # 1. Num Reads
-if [[ `awk -F, '$1 == "Sample1" {print $2}' ./results/overall_sample_quality.csv` != 26280 ]]; then 
+READS=`awk -F, '$1 == "Sample1" {print $2}' ./results/overall_sample_quality.csv`
+if [[ "$READS" != "26280" ]]; then 
     echo "Incorrect output: Number of reads mapped"
+    echo "  Expected: 26280, Got: $READS"
     exit 1
 fi
 # 2. Genome Completeness
-if [[ `awk -F, '$1 == "Sample1" {print $6}' ./results/overall_sample_quality.csv` != 0.845519 ]]; then 
+COMPLETENESS=`awk -F, '$1 == "Sample1" {print $6}' ./results/overall_sample_quality.csv | xargs printf "%.2f"`
+if [[ "$COMPLETENESS" != "0.85" ]]; then 
     echo "Incorrect output: Genome Completeness"
+    echo "  Expected: 0.85, Got: $COMPLETENESS"
     exit 1
 fi
 # 3. Check metadata put in correctly
-if [[ `awk -F, '$1 == "Sample1" {print $7}' ./results/overall_sample_quality.csv` != 231 ]]; then 
+CELL=`awk -F, '$1 == "Sample1" {print $7}' ./results/overall_sample_quality.csv`
+if [[ "$CELL" != "231" ]]; then 
     echo "Incorrect output: Metadata not parsed correctly"
+    echo "  Expected: 231, Got: $CELL"
     exit 1
 fi
 
