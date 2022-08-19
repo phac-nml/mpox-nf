@@ -1,5 +1,5 @@
 process generateSamplesheet {
-    publishDir "${params.outdir}/", pattern: "samplesheet.csv", mode: "copy"
+    publishDir "${params.tracedir}/", pattern: "samplesheet.csv", mode: "copy"
     tag { directory }
 
     input:

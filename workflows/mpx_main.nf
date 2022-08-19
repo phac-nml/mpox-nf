@@ -78,7 +78,7 @@ workflow mpx_main {
         )
 
         // Upload Workflow //
-        if ( params.upload_config ) {
+        if ( params.upload_config && params.metadata_csv ) {
             upload(
                 ivarConsensus.out,
                 host_removal.out.dehosted_fastq,

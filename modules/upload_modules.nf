@@ -10,21 +10,36 @@ process uploadSequenceData {
     path(metadata)
 
     output:
-    path("done_sequence_upload.txt")
+    path("done_sequence_uploads.txt")
 
     script:
     """
+    ### Fastq files ###
     mkdir -p irida_fastqs
     mv $read1s irida_fastqs
     mv $read2s irida_fastqs
-    irida_upload_csv_generator.py --directory irida_fastqs/ --samplesheet $metadata --fastq
-    irida-uploader --config $config -d irida_fastqs
+    irida_upload_csv_generator.py \
+        --directory irida_fastqs/ \
+        --samplesheet $metadata \
+        --fastq
+    irida-uploader \
+        --config $config \
+        -d irida_fastqs
 
+    ### Fasta files ###
     mkdir -p irida_fastas
     mv $fastas irida_fastas
-    irida_upload_csv_generator.py --directory irida_fastas/ --samplesheet $metadata --fasta
-    irida-uploader --config $config -d irida_fastas --upload_mode=assemblies
-    touch done_sequence_upload.txt
+    irida_upload_csv_generator.py \
+        --directory irida_fastas/ \
+        --samplesheet $metadata \
+        --fasta
+    irida-uploader \
+        --config $config \
+        -d irida_fastas \
+        --upload_mode=assemblies
+
+    ### Control upload flow ###
+    touch done_sequence_uploads.txt
     """
 }
 process uploadMetadata {
