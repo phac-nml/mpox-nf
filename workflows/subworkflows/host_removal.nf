@@ -2,7 +2,7 @@
 include {
     generateHostRemovedFastq;
     runKraken2
-} from '../modules/removal_modules.nf'
+} from '../../modules/removal_modules.nf'
 
 // Workflow to generate host removed reads and get read quality metrics
 workflow host_removal {
@@ -21,5 +21,6 @@ workflow host_removal {
             ch_kraken_results = ch_filtered_bam.map { it -> [ it[0], [] ] }
         }
     emit:
-    kraken_results = ch_kraken_results      // channel: [ val(sampleID), path(krakenReport) ]
+    kraken_results = ch_kraken_results              // channel: [ val(sampleID), path(krakenReport) ]
+    dehosted_fastq = generateHostRemovedFastq.out   // channel: [ val(sampleID), path(Read1), path(Read2), val(bool) ]
 }

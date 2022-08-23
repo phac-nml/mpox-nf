@@ -11,9 +11,10 @@ include {
     } from '../modules/main_modules.nf'
 
 // Workflows to Include
-include { initial_analysis } from './workflow_initial_analysis.nf'
-include { host_removal }   from './workflow_removal.nf'
-include { assess_quality } from './workflow_quality.nf'
+include { initial_analysis }    from './subworkflows/initial_analysis.nf'
+include { host_removal }        from './subworkflows/host_removal.nf'
+include { assess_quality }      from './subworkflows/quality.nf'
+include { upload }              from './subworkflows/upload.nf'
 
 workflow mpx_main {
     main:
@@ -50,8 +51,7 @@ workflow mpx_main {
 
         // Mapping and Filtering based on wanted ID
         compositeMapping(
-            ch_paired_fastqs
-                .combine( ch_comp_ref ),
+            ch_paired_fastqs.combine( ch_comp_ref ),
             ch_comp_idx
         )
 
@@ -67,5 +67,23 @@ workflow mpx_main {
         ivarConsensus( filterBam0.out.filteredbam )
 
         // Quality Workflow //
-        assess_quality( ivarConsensus.out, filterBam0.out.filteredbam, compositeMapping.out.sortedbam, host_removal.out.kraken_results )
+        if ( params.metadata_csv ) { ch_metadata = file( params.metadata_csv ) } else { ch_metadata = [] }
+
+        assess_quality( 
+            ivarConsensus.out,
+            filterBam0.out.filteredbam,
+            compositeMapping.out.sortedbam,
+            host_removal.out.kraken_results,
+            ch_metadata
+        )
+
+        // Upload Workflow //
+        if ( params.upload_config && params.metadata_csv ) {
+            upload(
+                ivarConsensus.out,
+                host_removal.out.dehosted_fastq,
+                assess_quality.out.sequence_metrics,
+                ch_metadata
+            )
+        }
 }

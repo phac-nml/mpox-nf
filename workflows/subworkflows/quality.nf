@@ -3,7 +3,7 @@ include {
     assessSimpleQuality;
     runNextclade;
     concatQuality
-} from '../modules/quality_modules.nf'
+} from '../../modules/quality_modules.nf'
 
 // Workflow for quality metrics and other checks
 workflow assess_quality {
@@ -12,6 +12,7 @@ workflow assess_quality {
         ch_filtered_bam             // channel: [ val(sampleID), path(filteredBam) ]
         ch_composite_bam            // channel: [ val(sampleID), path(compositeBam), path(compositeBamBai) ]
         ch_kraken_results           // channel: [ val(sampleID), path(krakenReport) ]
+        ch_metadata                 // channel: path(metadata_csv) or [] if none
 
     main:
         // Join fasta with bam and get some info
@@ -29,7 +30,12 @@ workflow assess_quality {
         runNextclade( ch_fasta_only.files.collect() )
 
         // Singular CSV output
-        concatQuality( assessSimpleQuality.out.collect(), runNextclade.out )
+        concatQuality(
+            assessSimpleQuality.out.collect(),
+            runNextclade.out,
+            ch_metadata
+        )
 
-    //emit:
+    emit:
+    sequence_metrics = concatQuality.out        // channel: path(overall_sample_quality.csv)
 }

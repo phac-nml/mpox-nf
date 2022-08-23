@@ -116,18 +116,56 @@ nextflow run phac-nml/monkeypox-nf --help
 ```
 
 ### Inputs
+
+#### Parameters
+
 | Parameter | Description | Default | Optional |
 |-|-|-|-|
-| directory | Path to directory containing paired fastq reads | None | No |
-| human_ref | Path to fasta formatted human reference genome | None | No |
-| outdir | String name to call output results directory | 'results' | Yes |
-| mpx_ref | Path to fasta formatted monkeypox reference genome | 'data/NC_063383.fasta' | Yes |
-| mpx_ref_id | String name of reference monkeypox contig ID to keep during host removal | 'NC_063383.1' | Yes |
-| pcr_csv | Path to CSV file containing qPCR diagnostic primers for nextclade input (must follow nextclade's format) | 'data/nml_primers.csv' | Yes |
-| cache | Path to cache directory to store/reuse conda environments | None | Yes |
-| composite_bwa_index_dir | Path to directory containing BWA indexed composite genome to skip indexing step | None | Yes |
-| kraken_db | Path to directory containing Kraken2 database - Runs Kraken2 on the generated dehosted fastq files | None | Yes |
-| kraken_viral_id | String Kraken2 taxonomic identifier to use for the percent viral reads calculation. Default is the Integer ID for the Viruses domain | 10239 | Yes |
+| --directory | Path to directory containing paired fastq reads | None | No |
+| --human_ref | Path to fasta formatted human reference genome | None | No |
+| --outdir | String name to call output results directory | 'results' | Yes |
+| --mpx_ref | Path to fasta formatted monkeypox reference genome | 'data/NC_063383.fasta' | Yes |
+| --mpx_ref_id | String name of reference monkeypox contig ID to keep during host removal | 'NC_063383.1' | Yes |
+| --pcr_csv | Path to CSV file containing qPCR diagnostic primers for nextclade input (must follow nextclade's format) | 'data/nml_primers.csv' | Yes |
+| --cache | Path to cache directory to store/reuse conda environments | None | Yes |
+| --composite_bwa_index_dir | Path to directory containing BWA indexed composite genome to skip indexing step | None | Yes |
+| --metadata_csv | Path to metadata CSV with atleast a column called 'sample' to add in additional metadata (like 'date') | None | Yes |
+| --kraken_db | Path to directory containing Kraken2 database - Runs Kraken2 on the generated dehosted fastq files | None | Yes |
+| --kraken_viral_id | String Kraken2 taxonomic identifier to use for the percent viral reads calculation. Default is the Integer ID for the Viruses domain | 10239 | Yes |
+| --upload_config | Path to IRIDA uploader config file (example below). Also requires a metadata CSV file input with columns 'sample', 'project_id', and 'sequencing_date' | None | Yes |
+
+#### Example Metadata CSV
+
+1. General CSV - Must have "sample" column
+
+    | sample | Collection Location | Collection Date | ct value |
+    |-|-|-|-|
+    | sample_1 | swab | 2022-06-10 | 23.12 |
+    | sample_2 | lesion | 2022-07-11 | 26.12 |
+    | pos_ctrl | NA | NA | 18.3 |
+    | test_specimen | NA | NA | 22.51 |
+
+2. Upload CSV - Must have "sample", "project_id", and "sequencing_date" columns
+
+    | sample | Collection Location | Collection Date | ct value | project_id | sequencing_date |
+    |-|-|-|-|-|-|
+    | sample_1 | swab | 2022-06-10 | 23.12 | 1041 | 2022-08-01 |
+    | sample_2 | lesion | 2022-07-11 | 26.12 | 1042 | 2022-08-01 |
+    | pos_ctrl | NA | NA | 18.3 | 23 | 2022-08-01 |
+    | test_specimen | NA | NA | 22.51 | 515 | 2022-07-29 |
+
+
+#### Example IRIDA Upload Config
+
+```conf
+[Settings]
+client_id = upload
+client_secret = TsdafnJFDS3%4fds@fiLKjwK9932hiuHF
+username = process_uploader
+password = WeDfIejaC19*Y..1P013
+base_url = http://an-irida-upload-url.ca/irida/api/
+parser = directory
+```
 
 ### Outputs
 

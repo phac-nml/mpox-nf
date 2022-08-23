@@ -17,6 +17,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # Setup repo
     - uses: actions/checkout@v3
     - name: Create artifacts dir
       run: mkdir -p artifacts
@@ -24,6 +25,8 @@ jobs:
       uses: actions/setup-python@v3
       with: 
         python-version: 3.9
+    
+    # Add conda, mamba, and nextflow
     - name: Add Conda to system
       run: |
         # $CONDA is an environment variable pointing to the root of the miniconda directory
@@ -36,10 +39,23 @@ jobs:
     - name: Nextflow Version
       run: | 
         nextflow -v
+
+    # Check how repo looks incase there is an issue
     - name: List Files
       run: |
         ls -al ${{ github.workspace }}
-    - name: Run Nextflow Monkeypox-NF Pipeline
+
+    # Run Help Command
+    - name: Pipeline Help CMD
+      run: |
+        nextflow run ./main.nf --help
+    
+    # Run Pipelines
+    - name: Run Metagenomic Illumina Pipeline
       run: bash .github/scripts/run_mpx_pipeline.sh
-    - name: Done
-      run: echo "Done"
+
+    - name: Run Metagenomic Illumina Pipeline with Metadata
+      run: bash .github/scripts/run_mpx_pipeline_metadata.sh
+
+    - name: Done Pipelines
+      run: echo "Done running pipelines"

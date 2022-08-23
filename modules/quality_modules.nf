@@ -66,6 +66,7 @@ process concatQuality {
     input:
     path(csvs)
     path(nextclade_csv)
+    path(metadata_csv)
 
     output:
     path ("overall_sample_quality.csv")
@@ -73,6 +74,7 @@ process concatQuality {
     script:
     """
     awk '(NR == 1) || (FNR > 1)' *quality.csv > simple_sample_quality.csv
-    csvtk join -f 'sample;seqName' simple_sample_quality.csv $nextclade_csv > overall_sample_quality.csv
+    sed -i '1s/seqName/sample/' $nextclade_csv
+    csvtk join --left-join --na 'NA' -f 'sample' simple_sample_quality.csv $metadata_csv $nextclade_csv > overall_sample_quality.csv
     """
 }
