@@ -34,37 +34,73 @@ def init_parser() -> argparse.ArgumentParser:
     group.add_argument('--fasta', action='store_true', help="Create SampleList for consensus fasta files")
     return parser
 
-def _add_to_paired_dict(dict: dict, full_path: str, name: str, read: str) -> None:
-    '''
+def min_file_size(file_p: str, min_bytes=50) -> bool:
+    """
     Purpose
     -------
-        Helper function to add found values to read dict
+    Return True if input file size is above specific int bytes
 
     Parameters
     ----------
-        dict: dict
+    file_p : str
+        Path to input file
+    min_bytes : int
+        Minimum file size allowed
+    """
+    if os.stat(file_p).st_size > min_bytes:
+        return True
+    else:
+        return False
+
+def add_to_paired_dict(d: dict, dir: str, full_file_name: str, name: str, read: str, too_small_list=[]) -> None:
+    '''
+    Purpose
+    -------
+        Helper function to add found values to read dict and make sure files are of the correct size
+
+    Parameters
+    ----------
+        d: dict
             Dictionary format paired read values to
-        full_path: str
-            Path to input file
+        dir: str
+            Directory containing samples
+        full_file_name: str
+            Full name of input file in dir
         name: str
             Name of input file
         read: str
             Read number. Either _R1 or _R2
     '''
-    # Add to key
-    if name in dict:
+    # Add to already available key
+    if name in too_small_list:
+        return
+    elif name in d:
+        # Check second read is above minimum as well
+        if not min_file_size(pathlib.Path(dir, full_file_name)):
+            too_small_list.append(name)
+            # Second file too small, delete sample from dict
+            del d[name]
+            print('WARNING: Sample {} does not meet the minimum file size of 50 bytes'.format(name))
+            return
+        # Add second read to dict
         if (read == '_R1') or (read == '.pair1'):
-            dict[name]['forward'] = full_path
+            d[name]['forward'] = full_file_name
         elif (read == '_R2') or (read == '.pair2'):
-            dict[name]['reverse'] = full_path
+            d[name]['reverse'] = full_file_name
         else:
             return
     # If not in dict, create key
     else:
+        # Must be above wanted file size
+        if not min_file_size(pathlib.Path(dir, full_file_name)):
+            too_small_list.append(name)
+            print('WARNING: Sample {} does not meet the minimum file size of 50 bytes'.format(name))
+            return
+        # Add to dict
         if (read == '_R1') or (read == '.pair1'):
-            dict[name]['forward'] = full_path
+            d[name]['forward'] = full_file_name
         elif (read == '_R2') or (read == '.pair2'):
-            dict[name]['reverse'] = full_path
+            d[name]['reverse'] = full_file_name
         else:
             return
 
@@ -105,8 +141,13 @@ def create_sample_file_df(samplesheet: str, directory: str, file_type='') -> pd.
     for file_found in os.listdir(directory):
         match = re.search(FILE_WANTED_REGEX, file_found)
         if match and file_type =='fastq':
-            _add_to_paired_dict(file_dict, file_found, match.group(1), match.group(2))
+            # Group 1 is the name, Group 2 is the read number (1 or 2)
+            add_to_paired_dict(file_dict, directory, file_found, match.group(1), match.group(2))
         elif match and file_type =='fasta':
+            # Group 1 is the name still
+            if not min_file_size(pathlib.Path(directory, file_found)):
+                print('WARNING: Sample {} does not meet the minimum file size of 50 bytes'.format(match.group(1)))
+                continue
             file_dict[match.group(1)]['forward'] = file_found
             file_dict[match.group(1)]['reverse'] = ''
         else:
