@@ -33,9 +33,17 @@ if [[ "$CELL" != "231" ]]; then
     echo "  Expected: 231, Got: $CELL"
     exit 1
 fi
+# 4. Check that the upload creation script works
+mkdir -p dehosted_fastqs
+mv results/*/*_dehosted* dehosted_fastqs/
+python bin/irida_upload_csv_generator.py -d dehosted_fastqs -s $PWD/.github/ci-data/test_metadata.csv --fastq
+if ! diff -q dehosted_fastqs/SampleList.csv $PWD/.github/output/SampleList.csv &>/dev/null; then 
+    echo "Upload SampleList Values are different"
+    exit 1
+fi
 
 # Reset and Track
 mv .nextflow.log artifacts/nextflow2.log
-rm -rf results work/ .nextflow*
+rm -rf ./results ./work/ .nextflow* ./dehosted_fastqs
 
 echo "Passed Tests"

@@ -1,4 +1,4 @@
-sample,val1,val2,val3,val4
-Sample1,231,ABCDE,:),NA
-blank1,543,XYZ,4,NULL
-extra_sample_not_avail,2,A,4,A
+sample,val1,val2,val3,val4,project_id,sequencing_date
+Sample1,231,ABCDE,:),NA,1200,2022-09-15
+blank1,543,XYZ,4,NULL,1200,2022-09-15
+extra_sample_not_avail,2,A,4,A,1200,2022-04-12
