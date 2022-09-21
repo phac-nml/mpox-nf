@@ -7,10 +7,10 @@ class NextflowInitialize {
             log.info """
             Usage:
                 Analyze:
-                nextflow run ${workflow.manifest.name} --directory [Path/to/PairedFastqs] --human_ref [Path/to/HumanRefFasta] [workflow-options]
+                nextflow run phac-nml/${workflow.manifest.name} --directory [Path/to/PairedFastqs] --human_ref [Path/to/HumanRefFasta] [workflow-options]
 
                 Help and Exit:
-                nextflow run ${workflow.manifest.name} --help
+                nextflow run phac-nml/${workflow.manifest.name} --help
 
             Profiles:
                 -profile [standard,conda,nml]   Configuration profile to use. Can use both if separated by a comma

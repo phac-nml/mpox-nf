@@ -1,0 +1,4 @@
+[Data]
+Sample_Name,Project_ID,File_Forward,File_Reverse
+Sample1,1200,Sample1_2022-09-15_R1.fastq,Sample1_2022-09-15_R2.fastq
+blank1,1200,blank1_2022-09-15_R1.fastq,blank1_2022-09-15_R2.fastq

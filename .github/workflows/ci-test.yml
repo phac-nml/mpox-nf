@@ -34,7 +34,7 @@ jobs:
     - name: Install Nextflow and Mamba
       run: |
         conda update -n base -c defaults conda
-        conda install -c conda-forge -c bioconda -c defaults mamba nextflow
+        conda install -c conda-forge -c bioconda -c defaults mamba nextflow pandas
         rm -f /usr/share/miniconda/pkgs/cache/*.json # workaround for mamba-org/mamba#488
     - name: Nextflow Version
       run: | 
