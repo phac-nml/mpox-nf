@@ -7,6 +7,6 @@ dependencies:
   - csvtk
   - fastqc
   - ivar
-  - nextclade
+  - nextclade >= 2.11.0
   - samtools
   - seqtk
