@@ -37,9 +37,9 @@ jobs:
         mamba-version: "*"
         use-mamba: true
         channels: conda-forge,bioconda,defaults
-    - name: Install Nextflow
+    - name: Install Nextflow and Pandas
       run: |
-        mamba install nextflow
+        mamba install nextflow pandas
     - name: Nextflow Version
       run: | 
         nextflow -v
